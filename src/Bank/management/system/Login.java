@@ -1,32 +1,33 @@
 package Bank.management.system;
 
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.ResultSet;
 
 public class Login extends JFrame implements ActionListener {
     JLabel label1, label2, label3;
     JTextField textField2;
     JPasswordField passwordField3;
+
     JButton button1,button2,button3;
-
     Login(){
-
         super("Bank Management System");
-        ImageIcon i1= new ImageIcon(ClassLoader.getSystemResource("icons/bank.png"));
-        Image i2= i1.getImage().getScaledInstance(100,100, Image.SCALE_DEFAULT);
-        ImageIcon i3= new ImageIcon(i2);
-        JLabel image= new JLabel(i3);
+        ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/bank.png"));
+        Image i2 = i1.getImage().getScaledInstance(100,100,Image.SCALE_DEFAULT);
+        ImageIcon i3 = new ImageIcon(i2);
+        JLabel image = new JLabel(i3);
         image.setBounds(350,10,100,100);
         add(image);
+
         ImageIcon ii1 = new ImageIcon(ClassLoader.getSystemResource("icons/card.png"));
         Image ii2 = ii1.getImage().getScaledInstance(100,100,Image.SCALE_DEFAULT);
         ImageIcon ii3 = new ImageIcon(ii2);
         JLabel iimage = new JLabel(ii3);
         iimage.setBounds(630,350,100,100);
         add(iimage);
+
         label1 = new JLabel("WELCOME TO ATM");
         label1.setForeground(Color.WHITE);
         label1.setFont(new Font("AvantGarde", Font.BOLD, 38));
@@ -86,26 +87,42 @@ public class Login extends JFrame implements ActionListener {
         iiimage.setBounds(0,0,850,480);
         add(iiimage);
 
+
         setLayout(null);
         setSize(850,480);
         setLocation(450,200);
+        setUndecorated(true);
         setVisible(true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-            if(e.getSource()==button1){
+            if (e.getSource()==button1){
+                Conn c = new Conn();
+                String cardno = textField2.getText();
+                String pin = new String(passwordField3.getPassword());
+                String q = "select * from login where card_number = '"+cardno+"' and  pin = '"+pin+"'";
+                ResultSet resultSet = c.statement.executeQuery(q);
+                if (resultSet.next()){
+                    setVisible(false);
+                    new main_Class(pin);
+                }else {
+                    JOptionPane.showMessageDialog(null,"Incorrect Card Number or PIN");
+                }
 
-            } else if (e.getSource()==button2) {
+
+            }else if (e.getSource() == button2){
                 textField2.setText("");
                 passwordField3.setText("");
-            } else if (e.getSource()==button3) {
-
+            }else if (e.getSource() == button3){
+                new Signup();
+                setVisible(false);
             }
-        }catch(Exception E){
+        }catch (Exception E){
             E.printStackTrace();
         }
+
     }
 
     public static void main(String[] args) {
